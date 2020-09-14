@@ -25,7 +25,7 @@ export const Button = React.forwardRef(
   ) => (
       <span
         {...props}
-        ref={ref as any}
+        ref={ref}
         className={cx(
           className,
           css`
@@ -57,12 +57,12 @@ export const EditorValue = React.forwardRef(
     ref: Ref<OrNull<null>>
   ) => {
     const textLines = value.document.nodes
-      .map((node: { text: any }) => node.text)
+      .map(node => node.text)
       .toArray()
       .join('\n')
     return (
       <div
-        ref={ref as any}
+        ref={ref}
         {...props}
         className={cx(
           className,
@@ -107,7 +107,7 @@ export const Icon = React.forwardRef(
   ) => (
       <span
         {...props}
-        ref={ref as any}
+        ref={ref}
         className={cx(
           'material-icons',
           className,
@@ -127,7 +127,7 @@ export const Instruction = React.forwardRef(
   ) => (
       <div
         {...props}
-        ref={ref as any}
+        ref={ref}
         className={cx(
           className,
           css`
@@ -149,7 +149,7 @@ export const Menu = React.forwardRef(
   ) => (
       <div
         {...props}
-        ref={ref as any}
+        ref={ref}
         className={cx(
           className,
           css`
@@ -165,12 +165,8 @@ export const Menu = React.forwardRef(
     )
 )
 
-interface portalProps {
-  children: any
-}
-
-export const Portal = (props: portalProps) => {
-  return ReactDOM.createPortal(props.children, document.body)
+export const Portal = ({ children }) => {
+  return ReactDOM.createPortal(children, document.body)
 }
 
 export const Toolbar = React.forwardRef(
@@ -180,7 +176,7 @@ export const Toolbar = React.forwardRef(
   ) => (
       <Menu
         {...props}
-        ref={ref as any}
+        ref={ref}
         className={cx(
           className,
           css`
