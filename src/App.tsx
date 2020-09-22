@@ -96,6 +96,17 @@ const App = () => {
             <BlockButton format="numbered-list" icon="format_list_numbered" />
             <BlockButton format="bulleted-list" icon="format_list_bulleted" />
             <InsertImageButton />
+            <SearchBar input={
+              <input
+                type="search"
+                placeholder="Search the text..."
+                onChange={e => setSearch(e.target.value)}
+                className={css`
+                    padding-left: 2em;
+                    width: 100%;
+                  `}
+              />
+            } />
           </Toolbar>
           <Editable
             renderElement={renderElement}
@@ -317,7 +328,7 @@ const isImageUrl = url => {
   return imageExtensions.includes(ext)
 }
 
-const SearchBar = () => {
+const SearchBar = (input) => {
   return (
     <div
       className={css`
@@ -334,15 +345,7 @@ const SearchBar = () => {
       >
         search
           </Icon>
-      <input
-        type="search"
-        placeholder="Search the text..."
-        onChange={e => setSearch(e.target.value)}
-        className={css`
-              padding-left: 2em;
-              width: 100%;
-            `}
-      />
+      {input}
     </div>
   );
 }
