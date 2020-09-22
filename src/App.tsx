@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import isHotkey from 'is-hotkey'
 import {
   Slate,
@@ -7,11 +7,12 @@ import {
   useSelected,
   useFocused,
   withReact,
-  useSlate
+  useSlate,
+  ReactEditor
 } from 'slate-react';
-import { Editor, Transforms, createEditor, Node, Text } from 'slate'
+import { Editor, Transforms, createEditor, Node, Text, Range } from 'slate'
 import { withHistory } from 'slate-history'
-import { Button, Icon, Toolbar } from './components'
+import { Button, Icon, Toolbar, Menu, Portal } from './components'
 import { css } from 'emotion';
 import styled from '@emotion/styled';
 import isUrl from 'is-url';
@@ -108,6 +109,7 @@ const App = () => {
               />
               } />
           </Toolbar>
+          <HoveringToolbar />
           <Editable
             renderElement={renderElement}
             renderLeaf={props => <Leaf {...props} />}
@@ -158,6 +160,23 @@ const toggleMark = (editor, format) => {
   } else {
     Editor.addMark(editor, format, true)
   }
+}
+
+const toggleFormat = (editor, format) => {
+  const isActive = isFormatActive(editor, format)
+  Transforms.setNodes(
+    editor,
+    { [format]: isActive ? null : true },
+    { match: Text.isText, split: true }
+  )
+}
+
+const isFormatActive = (editor, format) => {
+  const [match] = Editor.nodes(editor, {
+    match: n => n[format] === true,
+    mode: 'all',
+  })
+  return !!match
 }
 
 const isBlockActive = (editor, format) => {
@@ -356,6 +375,80 @@ const SearchBar = ({ input }) => {
       {input}
     </div>
   );
+}
+
+const HoveringToolbar = () => {
+  const ref = useRef<HTMLDivElement | null>()
+  const editor = useSlate()
+
+  useEffect(() => {
+    const el = ref.current
+    const { selection } = editor
+
+    if (!el) {
+      return
+    }
+
+    if (
+      !selection ||
+      !ReactEditor.isFocused(editor) ||
+      Range.isCollapsed(selection) ||
+      Editor.string(editor, selection) === ''
+    ) {
+      el.removeAttribute('style')
+      return
+    }
+
+    const domSelection = window.getSelection()
+    const domRange = domSelection.getRangeAt(0)
+    const rect = domRange.getBoundingClientRect()
+    el.style.opacity = '1'
+    el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`
+    el.style.left = `${rect.left +
+      window.pageXOffset -
+      el.offsetWidth / 2 +
+      rect.width / 2}px`
+  })
+
+  return (
+    <Portal>
+      <Menu
+        ref={ref}
+        className={css`
+          padding: 8px 7px 6px;
+          position: absolute;
+          z-index: 1;
+          top: -10000px;
+          left: -10000px;
+          margin-top: -6px;
+          opacity: 0;
+          background-color: #222;
+          border-radius: 4px;
+          transition: opacity 0.75s;
+        `}
+      >
+        <FormatButton format="bold" icon="format_bold" />
+        <FormatButton format="italic" icon="format_italic" />
+        <FormatButton format="underlined" icon="format_underlined" />
+      </Menu>
+    </Portal>
+  )
+}
+
+const FormatButton = ({ format, icon }) => {
+  const editor = useSlate()
+  return (
+    <Button
+      reversed
+      active={isFormatActive(editor, format)}
+      onMouseDown={event => {
+        event.preventDefault()
+        toggleFormat(editor, format)
+      }}
+    >
+      <Icon>{icon}</Icon>
+    </Button>
+  )
 }
 
 const initialValue = [
