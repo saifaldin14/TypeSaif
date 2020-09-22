@@ -10,7 +10,7 @@ import {
   useSlate,
   ReactEditor
 } from 'slate-react';
-import { Editor, Transforms, createEditor, Node, Text, Range } from 'slate'
+import { Editor, Transforms, createEditor, Node, Text, Range, Point } from 'slate'
 import { withHistory } from 'slate-history'
 import { Button, Icon, Toolbar, Menu, Portal } from './components'
 import { css } from 'emotion';
@@ -91,6 +91,7 @@ const App = () => {
             <MarkButton format="italic" icon="format_italic" />
             <MarkButton format="underline" icon="format_underlined" />
             <MarkButton format="code" icon="code" />
+            {/* <MarkButton format="table" icon="table_view" /> */}
             <BlockButton format="heading-one" icon="looks_one" />
             <BlockButton format="heading-two" icon="looks_two" />
             <BlockButton format="block-quote" icon="format_quote" />
@@ -210,6 +211,16 @@ const Element = (props) => {
       return <ol {...attributes}>{children}</ol>
     case 'image':
       return <ImageElement {...props} />
+    case 'table':
+      return (
+        <table>
+          <tbody {...attributes}>{children}</tbody>
+        </table>
+      )
+    case 'table-row':
+      return <tr {...attributes}>{children}</tr>
+    case 'table-cell':
+      return <td {...attributes}>{children}</td>
     default:
       return <p {...attributes}>{children}</p>
   }
@@ -273,7 +284,7 @@ const MarkButton = ({ format, icon }) => {
 }
 
 const withImages = editor => {
-  const { insertData, isVoid } = editor
+  const { insertData, isVoid, deleteBackward, deleteForward, insertBreak } = editor
 
   editor.isVoid = element => {
     return element.type === 'image' ? true : isVoid(element)
@@ -302,6 +313,62 @@ const withImages = editor => {
     } else {
       insertData(data)
     }
+  }
+
+  editor.deleteBackward = unit => {
+    const { selection } = editor
+
+    if (selection && Range.isCollapsed(selection)) {
+      const [cell] = Editor.nodes(editor, {
+        match: n => n.type === 'table-cell',
+      })
+
+      if (cell) {
+        const [, cellPath] = cell
+        const start = Editor.start(editor, cellPath)
+
+        if (Point.equals(selection.anchor, start)) {
+          return
+        }
+      }
+    }
+
+    deleteBackward(unit)
+  }
+
+  editor.deleteForward = unit => {
+    const { selection } = editor
+
+    if (selection && Range.isCollapsed(selection)) {
+      const [cell] = Editor.nodes(editor, {
+        match: n => n.type === 'table-cell',
+      })
+
+      if (cell) {
+        const [, cellPath] = cell
+        const end = Editor.end(editor, cellPath)
+
+        if (Point.equals(selection.anchor, end)) {
+          return
+        }
+      }
+    }
+
+    deleteForward(unit)
+  }
+
+  editor.insertBreak = () => {
+    const { selection } = editor
+
+    if (selection) {
+      const [table] = Editor.nodes(editor, { match: n => n.type === 'table' })
+
+      if (table) {
+        return
+      }
+    }
+
+    insertBreak()
   }
 
   return editor
