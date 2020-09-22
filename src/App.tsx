@@ -96,8 +96,8 @@ const App = () => {
             <BlockButton format="numbered-list" icon="format_list_numbered" />
             <BlockButton format="bulleted-list" icon="format_list_bulleted" />
             <InsertImageButton />
-            <SearchBar input={
-              <input
+            <SearchBar input=
+              {<input
                 type="search"
                 placeholder="Search the text..."
                 onChange={e => setSearch(e.target.value)}
@@ -106,14 +106,15 @@ const App = () => {
                     width: 100%;
                   `}
               />
-            } />
+              } />
           </Toolbar>
           <Editable
             renderElement={renderElement}
-            renderLeaf={renderLeaf}
+            renderLeaf={props => <Leaf {...props} />}
             placeholder="Enter some rich text…"
             spellCheck
             autoFocus
+            decorate={decorate}
             onKeyDown={event => {
               for (const hotkey in HOTKEYS) {
                 if (isHotkey(hotkey, event as any)) {
@@ -198,20 +199,27 @@ const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
     children = <strong>{children}</strong>
   }
-
   if (leaf.code) {
     children = <code>{children}</code>
   }
-
   if (leaf.italic) {
     children = <em>{children}</em>
   }
-
   if (leaf.underline) {
     children = <u>{children}</u>
   }
 
-  return <span {...attributes}>{children}</span>
+  return (
+    <span
+      {...attributes}
+      className={css`
+        font-weight: ${leaf.bold && 'bold'};
+        background-color: ${leaf.highlight && '#ffeeba'};
+      `}
+    >
+      {children}
+    </span>
+  );
 }
 
 const BlockButton = ({ format, icon }) => {
@@ -328,7 +336,7 @@ const isImageUrl = url => {
   return imageExtensions.includes(ext)
 }
 
-const SearchBar = (input) => {
+const SearchBar = ({ input }) => {
   return (
     <div
       className={css`
@@ -354,13 +362,13 @@ const initialValue = [
   {
     type: 'paragraph',
     children: [
-      { text: 'This is editable ' },
-      { text: 'rich', bold: true },
-      { text: ' text, ' },
-      { text: 'much', italic: true },
-      { text: ' better than a ' },
-      { text: '<textarea>', code: true },
-      { text: '!' },
+      { text: 'Welcome to ' },
+      { text: 'TypeSaif', bold: true },
+      { text: ' . An amazing ' },
+      { text: 'lightweight', italic: true },
+      { text: ' text editor with many ' },
+      { text: '<cool>', code: true },
+      { text: 'features!' },
     ],
   },
   {
@@ -368,12 +376,12 @@ const initialValue = [
     children: [
       {
         text:
-          "Since it's rich text, you can do things like turn a selection of text ",
+          "TypeSaif is a text editor that you can use while you are researching to ",
       },
-      { text: 'bold', bold: true },
+      { text: 'expedite', bold: true },
       {
         text:
-          ', or add a semantically rendered block quote in the middle of the page, like this:',
+          ' your workflow. It comes with many cool and handy features such as block quotes like this:',
       },
     ],
   },
