@@ -105,6 +105,7 @@ const App = () => {
                 className={css`
                     padding-left: 2em;
                     width: 100%;
+                    border-radius: 1rem;
                   `}
               />
               } />
