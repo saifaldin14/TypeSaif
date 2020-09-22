@@ -9,7 +9,7 @@ import {
   withReact,
   useSlate
 } from 'slate-react';
-import { Editor, Transforms, createEditor, Node } from 'slate'
+import { Editor, Transforms, createEditor, Node, Text } from 'slate'
 import { withHistory } from 'slate-history'
 import { Button, Icon, Toolbar } from './components'
 import { css } from 'emotion';
@@ -25,14 +25,6 @@ const HOTKEYS = {
 }
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list']
-
-// const textEditorStyles = css({
-//   display: 'flex',
-//   justifyContent: 'center',
-//   alignItems: 'center',
-//   width: '5rem',
-// });
-
 const TextWrapper = styled('div')`
   display: 'flex';
   justifyContent: 'center';
@@ -44,13 +36,41 @@ const TextWrapper = styled('div')`
 
 
 const App = () => {
-  const [value, setValue] = useState<Node[]>(initialValue)
+  const [value, setValue] = useState<Node[]>(initialValue);
+  const [search, setSearch] = useState<string | undefined>();
   const renderElement = useCallback(props => <Element {...props} />, [])
   const renderLeaf = useCallback(props => <Leaf {...props} />, [])
   const editor = useMemo(
     () => withImages(withHistory(withReact(createEditor()))),
     []
-  )
+  );
+  const decorate = useCallback(
+    ([node, path]) => {
+      const ranges = []
+
+      if (search && Text.isText(node)) {
+        const { text } = node
+        const parts = text.split(search)
+        let offset = 0
+
+        parts.forEach((part, i) => {
+          if (i !== 0) {
+            ranges.push({
+              anchor: { path, offset: offset - search.length },
+              focus: { path, offset },
+              highlight: true,
+            })
+          }
+
+          offset = offset + part.length + search.length
+        })
+      }
+
+      return ranges
+    },
+    [search]
+  );
+
   return (
     <div>
       <head>
@@ -295,6 +315,36 @@ const isImageUrl = url => {
   if (!isUrl(url)) return false
   const ext = new URL(url).pathname.split('.').pop()
   return imageExtensions.includes(ext)
+}
+
+const SearchBar = () => {
+  return (
+    <div
+      className={css`
+            position: relative;
+          `}
+    >
+      <Icon
+        className={css`
+              position: absolute;
+              top: 0.5em;
+              left: 0.5em;
+              color: #ccc;
+            `}
+      >
+        search
+          </Icon>
+      <input
+        type="search"
+        placeholder="Search the text..."
+        onChange={e => setSearch(e.target.value)}
+        className={css`
+              padding-left: 2em;
+              width: 100%;
+            `}
+      />
+    </div>
+  );
 }
 
 const initialValue = [
