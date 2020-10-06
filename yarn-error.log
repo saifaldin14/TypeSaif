@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/Cellar/yarn/1.22.4/libexec/bin/yarn.js add -D @types/emotion
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.22.4/libexec/bin/yarn.js add -D @types/react-feather
 
 PATH: 
   /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/puppetlabs/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2femotion: Not found
+  Error: https://registry.yarnpkg.com/@types%2freact-feather: Not found
       at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:66987:18)
       at Request.self.callback (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:140748:22)
       at Request.emit (events.js:310:20)
@@ -32,6 +32,8 @@ npm manifest:
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+      "@emotion/core": "^10.0.35",
+      "@emotion/styled": "^10.0.27",
       "@testing-library/jest-dom": "^4.2.4",
       "@testing-library/react": "^9.3.2",
       "@testing-library/user-event": "^7.1.2",
@@ -40,14 +42,20 @@ npm manifest:
       "@types/react": "^16.9.0",
       "@types/react-dom": "^16.9.0",
       "emotion": "^10.0.27",
+      "image-extensions": "^1.1.0",
       "immutable": "^4.0.0-rc.12",
+      "is-url": "^1.2.4",
+      "material-icons": "^0.3.1",
       "react": "^16.13.1",
       "react-dom": "^16.13.1",
+      "react-draggable": "^4.4.3",
+      "react-feather": "^2.0.8",
       "react-scripts": "3.4.3",
       "slate": "^0.58.4",
       "slate-history": "^0.58.4",
       "slate-react": "^0.58.4",
-      "typescript": "~3.7.2"
+      "typescript": "~3.7.2",
+      "jquery": "3.4.1"
     },
     "scripts": {
       "start": "react-scripts start",
@@ -5961,6 +5969,11 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
     integrity sha1-5HnICFjfDBsR3dppQPlgEfzaSpo=
+  
+  is-url@^1.2.4:
+    version "1.2.4"
+    resolved "https://registry.yarnpkg.com/is-url/-/is-url-1.2.4.tgz#04a4df46d28c4cff3d73d01ff06abeb318a1aa52"
+    integrity sha512-ITvGim8FhRiYe4IQ5uHSkj7pVaPDrCTkNd3yq3cV7iZAcJdHTUMPMEHcqSOy9xZ9qFenQCvi+2wjH9a1nXqHww==
   
   is-windows@^1.0.2:
     version "1.0.2"
