@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { createEditor, Editor, Transforms, Text } from 'slate'
 import { Slate, withReact, Editable, ReactEditor, useSlate } from 'slate-react';
-import { Button } from "./components";
+import { Button } from "./components/components";
 
 const CustomEditor = {
   isBoldMarkActive(editor) {

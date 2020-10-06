@@ -74,16 +74,6 @@ const TextEditor = () => {
 
   return (
     <div>
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&subset=latin-ext"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        />
-      </head>
       <TextWrapper>
         <Slate editor={editor} value={value} onChange={value => setValue(value)}>
           <Toolbar>
@@ -490,7 +480,7 @@ const HoveringToolbar = () => {
           left: -10000px;
           margin-top: -6px;
           opacity: 0;
-          background-color: #222;
+          background-color: #ffffff;
           border-radius: 4px;
           transition: opacity 0.75s;
         `}
@@ -528,8 +518,8 @@ const initialValue = [
       { text: ' . An amazing ' },
       { text: 'lightweight', italic: true },
       { text: ' text editor with many ' },
-      { text: '<cool>', code: true },
-      { text: 'features!' },
+      { text: '<cool>', bold: true },
+      { text: ' features!' },
     ],
   },
   {

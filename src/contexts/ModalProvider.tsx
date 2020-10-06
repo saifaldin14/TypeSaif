@@ -8,13 +8,14 @@ const useWindowPosition = () => {
 };
 
 export const ModalContext = React.createContext({
-  windowPosition: { x: 100, y: 100 },
+  windowPosition: { x: 0, y: 0 },
   hasDraggedWindowPosition: false,
   // extensionId, getExtensionId
 });
 
 const ModalProvider = ({ children }) => {
   const { windowPosition } = useWindowPosition();
+  let hasDraggedWindowPosition: boolean = false;
   const [extensionId, setExtensionId] = useState(undefined);
 
   function getExtensionId() {
@@ -34,9 +35,8 @@ const ModalProvider = ({ children }) => {
   return (
     <ModalContext.Provider
       value={{
-        extensionId,
-        getExtensionId,
         windowPosition,
+        hasDraggedWindowPosition
       }}
     >
       {children}

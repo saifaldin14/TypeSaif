@@ -14,8 +14,18 @@ const Modal = () => {
           position={hasDraggedWindowPosition ? { x: windowPosition.x, y: windowPosition.y } : null}
         >
           <div id="modal" className="modal-window" style={{
-            transform: windowPosition,
+            // transform: windowPosition,
           }}>
+            <head>
+              <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&subset=latin-ext"
+              />
+              <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/icon?family=Material+Icons"
+              />
+            </head>
             <div className="modal-window-inner-border">
               <>
                 <div className="modal-body">
